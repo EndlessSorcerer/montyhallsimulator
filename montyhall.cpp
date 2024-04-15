@@ -3,6 +3,7 @@
 #include <random>
 #include <ctime>
 #include <string>
+#include <unordered_map>
 
 using namespace std;
 
@@ -83,6 +84,14 @@ void montyhall(int n,int k,int&switchwins,int&nonswitchwins){
 }
 
 void simulate(int n,int k,int num){
+	if(k>(n-2)){
+		cerr<<"invalid values";
+		return;
+	}
+	if(k<0 || n<0 || num<=0){
+		cerr<<"invalid values";
+		return;
+	}
 	int switchwins=0;
 	int nonswitchwins=0;
 	for(int i=0;i<num;i++){
@@ -95,10 +104,47 @@ void simulate(int n,int k,int num){
 }
 
 int main(int argc, char* argv[]){
+	unordered_map<string, int> args;
+
+    // Initialize default values
+    args["--num_doors"] = 3;
+    args["--num_doors_opened_by_host"] = 1;
+    args["--num_simulations"] = 1000;
+
+    for (int i = 1; i < argc; i++) {
+        string arg(argv[i]);
+        if (arg == "--num_doors") {
+            if (i + 1 < argc) {
+                args["--num_doors"] = stoi(argv[i + 1]);
+                ++i;
+            } else {
+                cerr << "Missing value for --num_doors" << endl;
+            }
+        } else if (arg == "--num_doors_opened_by_host") {
+            if (i + 1 < argc) {
+                args["--num_doors_opened_by_host"] = stoi(argv[i + 1]);
+                ++i;
+            } else {
+                cerr << "Missing value for --num_doors_opened_by_host" << endl;
+            }
+        } else if (arg == "--num_simulations") {
+            if (i + 1 < argc) {
+                args["--num_simulations"] = stoi(argv[i + 1]);
+                ++i;
+            } else {
+                cerr << "Missing value for --num_simulations" << endl;
+            }
+        } else {
+            cerr << "Unknown argument: " << arg << endl;
+        }
+    }
+
+    cout << "num_doors: " << args["--num_doors"] << endl;
+    cout << "num_doors_opened_by_host: " << args["--num_doors_opened_by_host"] << endl;
+    cout << "num_simulations: " << args["--num_simulations"] << endl;
 	int n,k,num;
-	n=atoi(argv[1]);
-	k=atoi(argv[2]);
-	num=atoi(argv[3]);
-//	cin>>n>>k>>num;
+	n=args["--num_doors"];
+	k=args["--num_doors_opened_by_host"];
+	num=args["--num_simulations"];
 	simulate(n,k,num);
 }
